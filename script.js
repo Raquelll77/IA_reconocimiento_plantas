@@ -1,4 +1,5 @@
-const url = "https://my-api.plantnet.org/v2/_status";
+const url =
+  "https://cors-anywhere.herokuapp.com/https://my-api.plantnet.org/v2/_status";
 
 fetch(url, {
   method: "GET",
