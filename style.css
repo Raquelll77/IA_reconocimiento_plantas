@@ -81,3 +81,52 @@ body {
   #speciesButton:hover {
     background-color: #388e3c;
   }
+
+
+
+
+
+
+
+
+
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #a6d4a0;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    max-width: 90%; /* Para que no exceda el ancho disponible */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: auto; /* Centra la tarjeta */
+  }
+  
+  .card img {
+    max-width: 100%; /* Ajusta la imagen al ancho del contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espacio entre la imagen y el texto */
+    display: block; /* Centra la imagen dentro del contenedor */
+    width: 100%;
+  }
+  
+  .card h2 {
+    color: #2e7031;
+    margin-bottom: 10px;
+  }
+  
+  .card p {
+    margin: 5px 0;
+  }
+  
+  .card .iucn {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: #dff2d8;
+    color: #2e7031;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  
