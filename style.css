@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f8f1;
+    color: #3e4c3b;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: #2e7031;
+    margin-bottom: 20px;
+  }
+
+  form, button {
+    margin: 10px 0;
+  }
+
+  /* Botones y formulario */
+  #uploadForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border: 2px solid #2e7031;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  input[type="file"] {
+    font-size: 1rem;
+    padding: 10px;
+    border: 1px solid #a6d4a0;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #2e7031;
+  }
+
+  button {
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #2e7031;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #246025;
+  }
+
+  #message {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #d9534f;
+  }
+
+  /* Botón de listar especies */
+  #speciesButton {
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #4caf50;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+
+  #speciesButton:hover {
+    background-color: #388e3c;
+  }

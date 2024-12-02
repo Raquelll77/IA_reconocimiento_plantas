@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>App Plantas</title>
+    <title>Pl@ntNet - Identificación de Plantas</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Hola Planta</h1>
-
+    <h1>Identificación de Plantas con Pl@ntNet</h1>
+    <form id="uploadForm">
+      <input type="file" id="imageInput" accept="image/*" />
+      <button type="submit">Identificar Planta</button>
+    </form>
+    <button id="speciesButton">Listar Especies</button>
+    <p id="message"></p>
     <script src="script.js"></script>
   </body>
 </html>
