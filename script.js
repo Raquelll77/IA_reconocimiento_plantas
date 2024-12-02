@@ -1,5 +1,3 @@
-console.log(window.location.origin);
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("uploadForm");
   const imageInput = document.getElementById("imageInput");
@@ -18,12 +16,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Mostrar el loading
+      Swal.fire({
+        title: "Procesando...",
+        text: "Por favor espera mientras identificamos la planta.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading(); // Activar loading
+        },
+      });
+
       const response = await identificarPlanta(file);
+
       console.log("Resultados de la identificación:", response);
-      renderResultCard(response); // Generar la tarjeta con los resultados
-      message.textContent =
-        "Procesamiento exitoso. Consulta la tarjeta para detalles.";
+
+      // Generar la tarjeta y esperar a que esté completamente renderizada
+      await renderResultCard(response);
+
+      // Esperar a que la imagen cargue antes de cerrar el loading
+      const plantImage = document.querySelector(".plant-image");
+      if (plantImage) {
+        await waitForImageToLoad(plantImage);
+      }
+
+      Swal.close(); // Cerrar el loading
+
+      // Mostrar alerta de éxito
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "La planta fue identificada correctamente. Consulta la tarjeta para más detalles.",
+        confirmButtonText: "Aceptar",
+      });
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo identificar la planta. Inténtalo nuevamente.",
+      });
       console.error("Error:", error);
       message.textContent = "Error al procesar la imagen: " + error.message;
     }
@@ -52,10 +82,8 @@ async function identificarPlanta(imagen) {
   const noReject = "false"; // Opcional: no rechazar coincidencias
   const nbResults = "5"; // Número máximo de resultados
 
-  // Construir la URL con parámetros
   const url = `https://my-api.plantnet.org/v2/identify/${project}?api-key=${apiKey}&lang=${lang}&include-related-images=${includeRelatedImages}&no-reject=${noReject}&nb-results=${nbResults}`;
 
-  // Crear el cuerpo de la solicitud (FormData)
   const formData = new FormData();
   formData.append("images", imagen); // Archivo de imagen
   formData.append("organs", "leaf"); // Relacionado con el archivo (ejemplo: "leaf")
@@ -77,32 +105,23 @@ async function identificarPlanta(imagen) {
       );
     }
 
-    const data = await response.json();
-    console.log("Resultados de la identificación:", data);
-    return data;
+    return response.json();
   } catch (error) {
     console.error("Error al identificar la planta:", error);
     throw error;
   }
 }
 
-// Función para listar especies
-async function listarEspecies() {
-  const apiKey = "2b10MBQdgypiItEYRRaFJu"; // Reemplaza con tu clave API
-  const url = `https://my-api.plantnet.org/v2/species?lang=es&type=kt&api-key=${apiKey}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
+// Función para esperar a que una imagen cargue
+function waitForImageToLoad(image) {
+  return new Promise((resolve, reject) => {
+    if (image.complete) {
+      resolve(); // Imagen ya cargada
+    } else {
+      image.addEventListener("load", resolve); // Esperar a que cargue
+      image.addEventListener("error", reject); // Manejar errores
+    }
   });
-
-  if (!response.ok) {
-    throw new Error("Error en la solicitud: " + response.statusText);
-  }
-
-  return response.json();
 }
 
 // Función para buscar imágenes en GBIF
@@ -147,12 +166,10 @@ async function renderResultCard(data) {
       : result.iucn?.category || "No disponible";
   const score = (result.score * 100).toFixed(2) + "%";
 
-  // Buscar imágenes en GBIF
   const images = await fetchImagesFromGBIF(scientificName);
   const imageUrl =
     images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
-  // Generar el HTML de la tarjeta
   const cardHTML = `
     <div class="card">
       <img src="${imageUrl}" alt="${commonName}" class="plant-image" />
@@ -164,6 +181,5 @@ async function renderResultCard(data) {
     </div>
   `;
 
-  // Insertar el HTML en el contenedor
   document.getElementById("resultCard").innerHTML = cardHTML;
 }
