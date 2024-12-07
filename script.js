@@ -146,7 +146,7 @@ startVideoStream();
 
 // Función para identificar plantas
 async function identificarPlanta(imagen) {
-  const apiKey = "2b10ZTy9cb29I6RlYMQNtosE5";
+  const apiKey = "2b10MBQdgypiItEYRRaFJu";
   const project = "all";
   const lang = "es"; // Idioma de los resultados
   const includeRelatedImages = "false"; // Opcional: incluir imágenes relacionadas
