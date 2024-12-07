@@ -38,10 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
       await renderResultCard(response);
 
       // Esperar a que la imagen cargue antes de cerrar el loading
-      //const plantImage = document.querySelector(".plant-image");
-      //if (plantImage) {
-        //await waitForImageToLoad(plantImage);
-      //}
+      const plantImage = document.querySelector(".plant-image");
+      if (plantImage) {
+        await waitForImageToLoad(plantImage);
+      }
 
       Swal.close(); // Cerrar el loading
 
