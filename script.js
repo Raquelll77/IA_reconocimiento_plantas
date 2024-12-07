@@ -1,3 +1,4 @@
+console.log("Host: ", window.location.host);
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("uploadForm");
   const imageInput = document.getElementById("imageInput");
@@ -106,7 +107,13 @@ captureButton.addEventListener("click", () => {
   captureCanvas.width = videoStream.videoWidth;
   captureCanvas.height = videoStream.videoHeight;
 
-  context.drawImage(videoStream, 0, 0, captureCanvas.width, captureCanvas.height);
+  context.drawImage(
+    videoStream,
+    0,
+    0,
+    captureCanvas.width,
+    captureCanvas.height
+  );
 
   captureCanvas.toBlob(async (blob) => {
     try {
