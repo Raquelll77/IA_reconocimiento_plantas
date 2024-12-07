@@ -13,6 +13,12 @@
       <button type="submit">Identificar Planta</button>
     </form>
     <button id="speciesButton">Listar Especies</button>
+
+    <h2>Modo en Tiempo Real</h2>
+    <video id="videoStream" autoplay></video>
+    <canvas id="captureCanvas" style="display: none;"></canvas>
+    <button id="captureButton">Detectar Planta</button>
+
     <p id="message"></p>
     <div id="resultCard"></div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

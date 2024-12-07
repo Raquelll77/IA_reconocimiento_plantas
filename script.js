@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const speciesButton = document.getElementById("speciesButton");
   const resultCard = document.getElementById("resultCard");
 
+  const videoStream = document.getElementById("videoStream");
+  const captureCanvas = document.getElementById("captureCanvas");
+  const captureButton = document.getElementById("captureButton");
+
   // Manejo del formulario para identificar plantas
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -34,10 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
       await renderResultCard(response);
 
       // Esperar a que la imagen cargue antes de cerrar el loading
-      const plantImage = document.querySelector(".plant-image");
-      if (plantImage) {
-        await waitForImageToLoad(plantImage);
-      }
+      //const plantImage = document.querySelector(".plant-image");
+      //if (plantImage) {
+        //await waitForImageToLoad(plantImage);
+      //}
 
       Swal.close(); // Cerrar el loading
 
@@ -73,9 +77,76 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+speciesButton.addEventListener("click", async () => {
+  try {
+    const response = await listarEspecies();
+    console.log("Especies disponibles:", response);
+    message.textContent =
+      "Consulta de especies exitosa. Revisa la consola para detalles.";
+  } catch (error) {
+    console.error("Error al listar especies:", error);
+    message.textContent = "Error al listar las especies: " + error.message;
+  }
+});
+
+// Captura en tiempo real desde la cámara
+async function startVideoStream() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
+    videoStream.srcObject = stream;
+  } catch (error) {
+    console.error("Error al acceder a la cámara:", error);
+  }
+}
+
+captureButton.addEventListener("click", () => {
+  const context = captureCanvas.getContext("2d");
+  captureCanvas.width = videoStream.videoWidth;
+  captureCanvas.height = videoStream.videoHeight;
+
+  context.drawImage(videoStream, 0, 0, captureCanvas.width, captureCanvas.height);
+
+  captureCanvas.toBlob(async (blob) => {
+    try {
+      Swal.fire({
+        title: "Procesando...",
+        text: "Por favor espera mientras identificamos la planta.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await identificarPlanta(blob);
+      console.log("Resultados de la identificación:", response);
+
+      await renderResultCard(response);
+      Swal.close();
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: "La planta fue identificada correctamente.",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo identificar la planta.",
+      });
+      console.error("Error:", error);
+    }
+  }, "image/jpeg");
+});
+
+// Iniciar la transmisión en vivo al cargar la página
+startVideoStream();
+
 // Función para identificar plantas
 async function identificarPlanta(imagen) {
-  const apiKey = "2b10MBQdgypiItEYRRaFJu";
+  const apiKey = "2b10ZTy9cb29I6RlYMQNtosE5";
   const project = "all";
   const lang = "es"; // Idioma de los resultados
   const includeRelatedImages = "false"; // Opcional: incluir imágenes relacionadas
