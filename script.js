@@ -81,8 +81,14 @@ speciesButton.addEventListener("click", async () => {
     const response = await listarEspecies(); // Obtenemos las especies
     console.log("Especies disponibles:", response); // Temporal, para pruebas
 
-    // Guardamos los datos en localStorage para compartir con la segunda página
-    localStorage.setItem("especies", JSON.stringify(response));
+    // Reducimos el tamaño de los datos al guardar solo los campos necesarios
+    const reducedData = response.map((especie) => ({
+      name: especie.name,
+      description: especie.description,
+    }));
+
+    // Guardamos los datos en sessionStorage para evitar problemas de espacio
+    sessionStorage.setItem("especies", JSON.stringify(reducedData));
 
     // Redirigimos a la segunda página
     window.location.href = "especies.html";
@@ -91,6 +97,7 @@ speciesButton.addEventListener("click", async () => {
     message.textContent = "Error al listar las especies: " + error.message;
   }
 });
+
  });
 
 
