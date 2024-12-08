@@ -262,7 +262,6 @@ async function renderResultCard(data) {
   document.getElementById("resultCard").innerHTML = cardHTML;
 }
 
-
 //------------------------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -345,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function listarEspecies() {
   const apiKey = "2b10MBQdgypiItEYRRaFJu"; // Reemplaza con tu clave API
-  const url = https://my-api.plantnet.org/v2/species?lang=es&type=kt&api-key=${apiKey};
+  const url = `https://my-api.plantnet.org/v2/species?lang=es&type=kt&api-key=${apiKey}`;
 
   const response = await fetch(url, {
     method: "GET",
