@@ -30,9 +30,16 @@
   <div id="speciesContainer"></div>
 
   <script>
-    // Recuperar las especies del localStorage
+    // Función para obtener parámetros de la URL
+    function getUrlParameter(name) {
+      const url = new URL(window.location.href);
+      return decodeURIComponent(url.searchParams.get(name));
+    }
+
+    // Recuperar las especies desde la URL
+    const speciesData = JSON.parse(getUrlParameter("data"));
+
     const speciesContainer = document.getElementById("speciesContainer");
-    const speciesData = JSON.parse(localStorage.getItem("especies"));
 
     if (speciesData && Array.isArray(speciesData)) {
       speciesData.forEach(species => {
