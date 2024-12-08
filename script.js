@@ -263,7 +263,6 @@ async function renderResultCard(data) {
 }
 
 //------------------------------------------------------------
-
 document.addEventListener("DOMContentLoaded", () => {
   const openCameraButton = document.getElementById("openCameraButton");
   const switchCameraButton = document.getElementById("switchCameraButton");
@@ -281,12 +280,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const startVideoStream = async (deviceId) => {
+  const startVideoStream = async (deviceId = null, facingMode = null) => {
     try {
       stopStream();
       const constraints = {
-        video: deviceId ? { deviceId: { exact: deviceId } } : true,
+        video: facingMode
+          ? { facingMode } // Usar `facingMode` para frontal o trasera
+          : deviceId
+          ? { deviceId: { exact: deviceId } } // Usar `deviceId` si está definido
+          : true,
       };
+
       currentStream = await navigator.mediaDevices.getUserMedia(constraints);
       videoStream.srcObject = currentStream;
     } catch (error) {
@@ -313,8 +317,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cameraContainer.style.display === "none") {
       cameraContainer.style.display = "block";
       await getVideoDevices();
+
       if (videoDevices.length > 0) {
-        startVideoStream(videoDevices[currentDeviceIndex]?.deviceId);
+        // Intentar iniciar con la cámara trasera por defecto
+        startVideoStream(null, "environment");
       } else {
         Swal.fire({
           icon: "error",
@@ -331,7 +337,12 @@ document.addEventListener("DOMContentLoaded", () => {
   switchCameraButton.addEventListener("click", async () => {
     if (videoDevices.length > 1) {
       currentDeviceIndex = (currentDeviceIndex + 1) % videoDevices.length;
-      startVideoStream(videoDevices[currentDeviceIndex]?.deviceId);
+      const device = videoDevices[currentDeviceIndex];
+      startVideoStream(device.deviceId);
+    } else if (videoDevices.length === 1) {
+      const currentFacingMode =
+        currentDeviceIndex === 0 ? "user" : "environment";
+      startVideoStream(null, currentFacingMode);
     } else {
       Swal.fire({
         icon: "info",
