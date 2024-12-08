@@ -269,7 +269,7 @@ async function renderResultCard(data) {
    // Evento para abrir el modal al hacer clic en el ícono
   document
     .getElementById("moreInfoIcon")
-    .addEventListener("click", () => fetchWikipediaInfo(scientificName));
+    .addEventListener("click", () => fetchGBIFInfoWithDescription(scientificName));
 }
 
 //------------------------------------------------------------
@@ -370,37 +370,95 @@ async function listarEspecies() {
   return response.json();
 }
 
-
-///Modal
-async function fetchWikipediaInfo(scientificName) {
-  // Limpia y formatea el nombre científico
-  const formattedName = encodeURIComponent(scientificName.replace(/\sL\.$/, ""));
-
-  const wikipediaUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${formattedName}`;
+// Función para obtener información detallada desde la API de GBIF
+async function fetchGBIFInfoWithDescription(scientificName) {
+  const gbifUrl = `https://api.gbif.org/v1/occurrence/search?scientificName=${encodeURIComponent(scientificName)}&limit=1`;
 
   try {
-    const response = await fetch(wikipediaUrl);
+    const response = await fetch(gbifUrl);
 
     if (!response.ok) {
-      throw new Error(`No se encontró información en Wikipedia para: ${scientificName}`);
+      throw new Error("Error al buscar información en GBIF: " + response.statusText);
     }
 
     const data = await response.json();
-    console.log("Datos de Wikipedia:", data);
+    console.log("Datos obtenidos de GBIF:", data);
 
-    // Mostrar información en un modal o alerta
-    Swal.fire({
-      title: data.title,
-      text: data.extract || "No hay descripción disponible.",
-      imageUrl: data.thumbnail ? data.thumbnail.source : "",
-      imageAlt: data.title,
-    });
+    // Verificar si hay resultados
+    if (data.results && data.results.length > 0) {
+      const firstResult = data.results[0];
+
+      // Obtener la información detallada de la planta desde GBIF
+      const gbifData = {
+        species: firstResult.species || "No disponible",
+        family: firstResult.family || "No disponible",
+        genus: firstResult.genus || "No disponible",
+        country: firstResult.country || "No disponible",
+        decimalLatitude: firstResult.decimalLatitude || "No disponible",
+        decimalLongitude: firstResult.decimalLongitude || "No disponible",
+        occurrenceDate: firstResult.eventDate || "No disponible",
+        record: firstResult.occurrenceID || "No disponible",
+      };
+
+      console.log("Información detallada de la planta desde GBIF:", gbifData);
+
+      // Obtener la descripción de Wikipedia usando el nombre científico
+      const wikipediaData = await fetchWikipediaDescription(firstResult.species);
+
+      // Mostrar la información de la planta en un modal
+      Swal.fire({
+        title: `Información sobre ${firstResult.species || 'planta desconocida'}`,
+        html: `
+          <p><strong>Género:</strong> ${gbifData.genus}</p>
+          <p><strong>Familia:</strong> ${gbifData.family}</p>
+          <p><strong>País:</strong> ${gbifData.country}</p>
+          <p><strong>Fecha de ocurrencia:</strong> ${gbifData.occurrenceDate}</p>
+          <p><strong>Ubicación:</strong> Lat: ${gbifData.decimalLatitude}, Long: ${gbifData.decimalLongitude}</p>
+          <p><strong>ID de registro:</strong> ${gbifData.record}</p>
+          <p><strong>Descripción:</strong> ${wikipediaData.extract || "No hay descripción disponible."}</p>
+          <p><strong>Título de Wikipedia:</strong> <a href="${wikipediaData.url}" target="_blank">${wikipediaData.title}</a></p>
+          <p><strong>Más información:</strong> <a href="${wikipediaData.url}" target="_blank">Ver página completa en Wikipedia</a></p>
+        `,
+        icon: 'info',
+      });
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Sin resultados",
+        text: `No se encontraron resultados para ${scientificName} en GBIF.`,
+      });
+    }
   } catch (error) {
-    console.error("Error al obtener información de Wikipedia:", error);
+    console.error("Error al obtener información de GBIF:", error);
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: `No se pudo obtener información de Wikipedia para "${scientificName}".`,
+      text: `No se pudo obtener información de GBIF para "${scientificName}".`,
     });
+  }
+}
+
+// Función para obtener más información desde Wikipedia en español
+async function fetchWikipediaDescription(scientificName) {
+  const formattedName = encodeURIComponent(scientificName);
+  const searchUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${formattedName}`;
+
+  try {
+    const response = await fetch(searchUrl);
+    if (!response.ok) {
+      throw new Error(`No se pudo obtener descripción de Wikipedia para: ${scientificName}`);
+    }
+
+    const data = await response.json();
+    console.log("Descripción de Wikipedia:", data);
+
+    return {
+      extract: data.extract || null,          // Descripción breve
+      title: data.title || "No disponible",   // Título de la página
+      url: data.content_urls?.desktop?.page || "No disponible", // URL de la página
+    };
+  } catch (error) {
+    console.error("Error al obtener la descripción de Wikipedia:", error);
+    return { extract: null, title: "No disponible", url: "No disponible" };
   }
 }
