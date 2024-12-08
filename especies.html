@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Especies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .card-description {
+      color: #555;
+    }
+    .pagination {
+      margin: 20px 0;
+      text-align: center;
+    }
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .pagination button.active {
+      background-color: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+    .pagination button:disabled {
+      background-color: #eee;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Especies Disponibles</h1>
+  <div id="speciesContainer"></div>
+  <div class="pagination" id="pagination"></div>
+
+  <!-- Incluir el archivo JS -->
+  <script src="script.js"></script>
+  <script>
+    const ITEMS_PER_PAGE = 10; // Número de tarjetas por página
+    let currentPage = 1;
+    let allSpecies = [];
+
+    // Función para renderizar las tarjetas en la página actual
+    function renderPage(page) {
+      const speciesContainer = document.getElementById("speciesContainer");
+      const paginationContainer = document.getElementById("pagination");
+
+      // Limpiar el contenido actual
+      speciesContainer.innerHTML = "";
+      paginationContainer.innerHTML = "";
+
+      // Calcular el índice inicial y final para los datos de la página actual
+      const startIndex = (page - 1) * ITEMS_PER_PAGE;
+      const endIndex = page * ITEMS_PER_PAGE;
+
+      // Obtener las especies correspondientes a esta página
+      const speciesToShow = allSpecies.slice(startIndex, endIndex);
+
+      // Crear tarjetas para las especies de esta página
+      speciesToShow.forEach(species => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = species.name;
+
+        const description = document.createElement("div");
+        description.className = "card-description";
+        description.textContent = species.description || "Sin descripción";
+
+        card.appendChild(title);
+        card.appendChild(description);
+        speciesContainer.appendChild(card);
+      });
+
+      // Crear botones de paginación
+      createPagination(page);
+    }
+
+    // Función para crear la paginación dinámica
+    function createPagination(current) {
+      const paginationContainer = document.getElementById("pagination");
+      const totalPages = Math.ceil(allSpecies.length / ITEMS_PER_PAGE);
+      const maxVisiblePages = 7; // Número máximo de páginas visibles en el rango
+
+      let startPage = Math.max(1, current - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      // Ajustar si estamos cerca del final
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      // Botón para la primera página
+      if (startPage > 1) {
+        const firstButton = document.createElement("button");
+        firstButton.textContent = "1";
+        firstButton.addEventListener("click", () => {
+          currentPage = 1;
+          renderPage(currentPage);
+        });
+        paginationContainer.appendChild(firstButton);
+
+        // Agregar puntos suspensivos si no es la página adyacente
+        if (startPage > 2) {
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          paginationContainer.appendChild(dots);
+        }
+      }
+
+      // Botones para el rango visible
+      for (let i = startPage; i <= endPage; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.className = i === current ? "active" : "";
+        button.disabled = i === current;
+        button.addEventListener("click", () => {
+          currentPage = i;
+          renderPage(currentPage);
+        });
+        paginationContainer.appendChild(button);
+      }
+
+      // Botón para la última página
+      if (endPage < totalPages) {
+        // Agregar puntos suspensivos si no es la página adyacente
+        if (endPage < totalPages - 1) {
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          paginationContainer.appendChild(dots);
+        }
+
+        const lastButton = document.createElement("button");
+        lastButton.textContent = totalPages;
+        lastButton.addEventListener("click", () => {
+          currentPage = totalPages;
+          renderPage(currentPage);
+        });
+        paginationContainer.appendChild(lastButton);
+      }
+    }
+
+    // Función para obtener y mostrar las especies
+    async function mostrarEspecies() {
+      try {
+        allSpecies = await listarEspecies(); // Llamar a la función listarEspecies
+        if (allSpecies.length > 0) {
+          renderPage(currentPage); // Mostrar la primera página
+        } else {
+          document.getElementById("speciesContainer").textContent = "No se encontraron especies.";
+        }
+      } catch (error) {
+        console.error("Error al mostrar las especies:", error);
+        document.getElementById("speciesContainer").textContent = "Error al cargar las especies.";
+      }
+    }
+
+    // Llamar a la función para mostrar las especies
+    mostrarEspecies();
+  </script>
+</body>
+</html>
