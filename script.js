@@ -94,10 +94,6 @@ speciesButton.addEventListener("click", async () => {
  });
 
 
-
-
-
-
 // Captura en tiempo real desde la cámara
 async function startVideoStream() {
   try {
