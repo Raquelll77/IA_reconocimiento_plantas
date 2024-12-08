@@ -121,16 +121,28 @@
       const speciesToShow = allSpecies.slice(startIndex, endIndex);
 
       // Crear tarjetas para las especies de esta página
-      speciesToShow.forEach(species => {
+      speciesToShow.forEach(result => {
         const { name, scientificName, family, score, conservationStatus, imageUrl } = species;
         console.log(species);
-        console.log('esto es '+species.commonNames);
-        console.log('esto es '+species.commonNames[0]);
-        console.log('esto es 2'+species.commonNames[startIndex]);
+        console.log('esto es '+ result.commonNames);
+        console.log('esto es '+ result.commonNames[0]);
+        console.log('esto es 2'+ result.commonNames[startIndex]);
+        const commonName = result.species.commonNames[0] || "No disponible";
+   scientificName = result.species.scientificName || "No disponible";
+  family = result.species.family.scientificName || "No disponible";
+  conservationStatus =
+        result.iucn?.category === "LC"
+        ? "Preocupación Menor"
+        : result.iucn?.category || "No disponible";
+  score = (result.score * 100).toFixed(2) + "%";
+
+  images =  fetchImagesFromGBIF(scientificName);
+  imageUrl =
+    images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
         const cardHTML = `
           <div class="card">
-            <img src="${species.imageUrl || 'placeholder.jpg'}" alt="${name}" class="plant-image" />
+            <img src="${imageUrl || 'placeholder.jpg'}" alt="${name}" class="plant-image" />
             <h2>${name}</h2>
             <p><strong>Nombre científico:</strong> ${scientificName || "No disponible"}</p>
             <p><strong>Familia:</strong> ${family || "No disponible"}</p>
