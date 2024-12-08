@@ -261,3 +261,84 @@ async function renderResultCard(data) {
 
   document.getElementById("resultCard").innerHTML = cardHTML;
 }
+
+
+//------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+  const openCameraButton = document.getElementById("openCameraButton");
+  const switchCameraButton = document.getElementById("switchCameraButton");
+  const cameraContainer = document.getElementById("cameraContainer");
+  const videoStream = document.getElementById("videoStream");
+  let currentStream = null;
+  let currentDeviceIndex = 0;
+  let videoDevices = [];
+
+  const stopStream = () => {
+    if (currentStream) {
+      const tracks = currentStream.getTracks();
+      tracks.forEach((track) => track.stop());
+      currentStream = null;
+    }
+  };
+
+  const startVideoStream = async (deviceId) => {
+    try {
+      stopStream();
+      const constraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : true,
+      };
+      currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+      videoStream.srcObject = currentStream;
+    } catch (error) {
+      console.error("Error al acceder a la cámara:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo acceder a la cámara.",
+      });
+    }
+  };
+
+  const getVideoDevices = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      videoDevices = devices.filter((device) => device.kind === "videoinput");
+      console.log("Cámaras disponibles:", videoDevices);
+    } catch (error) {
+      console.error("Error al obtener las cámaras:", error);
+    }
+  };
+
+  openCameraButton.addEventListener("click", async () => {
+    if (cameraContainer.style.display === "none") {
+      cameraContainer.style.display = "block";
+      await getVideoDevices();
+      if (videoDevices.length > 0) {
+        startVideoStream(videoDevices[currentDeviceIndex]?.deviceId);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se encontraron cámaras disponibles.",
+        });
+      }
+    } else {
+      cameraContainer.style.display = "none";
+      stopStream();
+    }
+  });
+
+  switchCameraButton.addEventListener("click", async () => {
+    if (videoDevices.length > 1) {
+      currentDeviceIndex = (currentDeviceIndex + 1) % videoDevices.length;
+      startVideoStream(videoDevices[currentDeviceIndex]?.deviceId);
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Cámara única",
+        text: "No hay cámaras adicionales para alternar.",
+      });
+    }
+  });
+});
