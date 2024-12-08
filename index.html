@@ -9,15 +9,38 @@
   <body>
     <h1>Identificación de Plantas con IA</h1>
     <form id="uploadForm">
-      <input type="file" id="imageInput" accept="image/*" />
-      <button type="submit">Identificar Planta</button>
+      <row>
+        <col>
+          <input type="file" id="imageInput" accept="image/*" />
+        </col>
+        <col>
+          <button type="submit">Identificar Planta por imagen</button>
+        </col>
+        <col>
+        <p>ó</p>
+      </col>
+
+      </row>
+      <row>
+        <col>
+        <button id="openCameraButton" type="button">Identificar planta con camara</button>
+      </col>
+      </row>
+      
     </form>
     <button id="speciesButton">Listar Especies</button>
 
     <h2>Modo en Tiempo Real</h2>
-    <video id="videoStream" autoplay></video>
-    <canvas id="captureCanvas" style="display: none;"></canvas>
-    <button id="captureButton">Detectar Planta</button>
+ <!-- Modificaciones en el HTML -->
+<div id="cameraContainer" style="display: none;">
+  <video id="videoStream" autoplay></video>
+  <canvas id="captureCanvas" style="display: none;"></canvas>
+  <br>
+  <button id="switchCameraButton">Cambiar Cámara</button>
+
+  <button id="captureButton" type="button">Capturar Imagen</button>
+</div>
+
 
     <p id="message"></p>
     <div id="resultCard"></div>
