@@ -256,10 +256,19 @@ async function renderResultCard(data) {
       <p><strong>Familia:</strong> ${family}</p>
       <p><strong>Precisión:</strong> ${score}</p>
       <div class="iucn">Conservación: ${conservationStatus}</div>
+      <!-- Botón de información -->
+      <i id="moreInfoIcon" class="fas fa-info-circle more-info-icon" 
+         style="font-size: 1.5rem; cursor: pointer;"
+         title="Más información"></i>
     </div>
   `;
 
   document.getElementById("resultCard").innerHTML = cardHTML;
+
+   // Evento para abrir el modal al hacer clic en el ícono
+  document
+    .getElementById("moreInfoIcon")
+    .addEventListener("click", () => fetchWikipediaInfo(scientificName));
 }
 
 //------------------------------------------------------------
@@ -358,4 +367,39 @@ async function listarEspecies() {
   }
 
   return response.json();
+}
+
+
+///Modal
+async function fetchWikipediaInfo(scientificName) {
+  // Limpia y formatea el nombre científico
+  const formattedName = encodeURIComponent(scientificName.replace(/\sL\.$/, ""));
+
+  const wikipediaUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${formattedName}`;
+
+  try {
+    const response = await fetch(wikipediaUrl);
+
+    if (!response.ok) {
+      throw new Error(`No se encontró información en Wikipedia para: ${scientificName}`);
+    }
+
+    const data = await response.json();
+    console.log("Datos de Wikipedia:", data);
+
+    // Mostrar información en un modal o alerta
+    Swal.fire({
+      title: data.title,
+      text: data.extract || "No hay descripción disponible.",
+      imageUrl: data.thumbnail ? data.thumbnail.source : "",
+      imageAlt: data.title,
+    });
+  } catch (error) {
+    console.error("Error al obtener información de Wikipedia:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `No se pudo obtener información de Wikipedia para "${scientificName}".`,
+    });
+  }
 }

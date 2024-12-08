@@ -1,50 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Identificación de Plantas</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Identificación de Plantas con IA</h1>
-    <form id="uploadForm">
-      <row>
-        <col>
-          <input type="file" id="imageInput" accept="image/*" />
-        </col>
-        <col>
-          <button type="submit">Identificar Planta por imagen</button>
-        </col>
-        <col>
-        <p>ó</p>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identificación de Plantas</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+
+<body>
+  <h1>Identificación de Plantas con IA</h1>
+  <form id="uploadForm">
+    <row>
+      <col>
+      <input type="file" id="imageInput" accept="image/*" />
+      </col>
+      <col>
+      <button type="submit">Identificar Planta por imagen</button>
+      </col>
+      <col>
+      <p>ó</p>
       </col>
 
-      </row>
-      <row>
-        <col>
-        <button id="openCameraButton" type="button">Identificar planta con camara</button>
+    </row>
+    <row>
+      <col>
+      <button id="openCameraButton" type="button">Identificar planta con camara</button>
       </col>
-      </row>
-      
-    </form>
-    <button id="speciesButton">Listar Especies</button>
+    </row>
 
-    <h2>Modo en Tiempo Real</h2>
- <!-- Modificaciones en el HTML -->
-<div id="cameraContainer" style="display: none;">
-  <video id="videoStream" autoplay></video>
-  <canvas id="captureCanvas" style="display: none;"></canvas>
-  <br>
-  <button id="switchCameraButton">Cambiar Cámara</button>
+  </form>
+  <button id="speciesButton">Listar Especies</button>
 
-  <button id="captureButton" type="button">Capturar Imagen</button>
+  <h2>Modo en Tiempo Real</h2>
+  <!-- Modificaciones en el HTML -->
+  <div id="cameraContainer" style="display: none;">
+    <video id="videoStream" autoplay></video>
+    <canvas id="captureCanvas" style="display: none;"></canvas>
+    <br>
+    <button id="switchCameraButton">Cambiar Cámara</button>
+
+    <button id="captureButton" type="button">Capturar Imagen</button>
+  </div>
+
+
+  <p id="message"></p>
+  <div id="resultCard"></div>
+
+
+<!-- Modal Personalizado -->
+<div class="modal" id="customModal">
+  <div class="modal-content">
+    <span class="modal-close" id="closeModal">&times;</span>
+    <div class="modal-header">Información de la Planta</div>
+    <div class="modal-body">
+      <p id="plantInfoText">Aquí se mostrará la información obtenida.</p>
+      <img id="plantInfoImage" src="https://via.placeholder.com/400" alt="Imagen de la Planta" />
+    </div>
+    <div class="modal-footer">
+      <button id="closeModalButton">Cerrar</button>
+    </div>
+  </div>
 </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="script.js"></script>
+</body>
 
-    <p id="message"></p>
-    <div id="resultCard"></div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="script.js"></script>
-  </body>
 </html>
