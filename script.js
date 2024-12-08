@@ -78,17 +78,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-speciesButton.addEventListener("click", async () => {
-  try {
-    const response = await listarEspecies();
-    console.log("Especies disponibles:", response);
-    message.textContent =
-      "Consulta de especies exitosa. Revisa la consola para detalles.";
-  } catch (error) {
-    console.error("Error al listar especies:", error);
-    message.textContent = "Error al listar las especies: " + error.message;
-  }
-});
+// speciesButton.addEventListener("click", async () => {
+//   try {
+//     const response = await listarEspecies();
+//     console.log("Especies disponibles:", response);
+//     message.textContent =
+//       "Consulta de especies exitosa. Revisa la consola para detalles.";
+//   } catch (error) {
+//     console.error("Error al listar especies:", error);
+//     message.textContent = "Error al listar las especies: " + error.message;
+//   }
+// });
 
 // Captura en tiempo real desde la cámara
 async function startVideoStream() {
@@ -342,3 +342,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+async function listarEspecies() {
+  const apiKey = "2b10MBQdgypiItEYRRaFJu"; // Reemplaza con tu clave API
+  const url = https://my-api.plantnet.org/v2/species?lang=es&type=kt&api-key=${apiKey};
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error en la solicitud: " + response.statusText);
+  }
+
+  return response.json();
+}
