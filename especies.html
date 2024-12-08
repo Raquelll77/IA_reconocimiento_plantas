@@ -124,6 +124,9 @@
       speciesToShow.forEach(species => {
         const { name, scientificName, family, score, conservationStatus, imageUrl } = species;
         console.log(species);
+        console.log(species.commonNames);
+        console.log(species.commonNames[0]);
+        
         const cardHTML = `
           <div class="card">
             <img src="${species.imageUrl || 'placeholder.jpg'}" alt="${name}" class="plant-image" />
