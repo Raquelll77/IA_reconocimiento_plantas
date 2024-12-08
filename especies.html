@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Especies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .card-description {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Especies Disponibles</h1>
+  <div id="speciesContainer"></div>
+
+  <script>
+    // Recuperar las especies del localStorage
+    const speciesContainer = document.getElementById("speciesContainer");
+    const speciesData = JSON.parse(localStorage.getItem("especies"));
+
+    if (speciesData && Array.isArray(speciesData)) {
+      speciesData.forEach(species => {
+        // Crear una tarjeta para cada especie
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = species.name; // Ajustar según los datos
+
+        const description = document.createElement("div");
+        description.className = "card-description";
+        description.textContent = species.description || "Sin descripción";
+
+        card.appendChild(title);
+        card.appendChild(description);
+
+        speciesContainer.appendChild(card);
+      });
+    } else {
+      speciesContainer.textContent = "No se encontraron especies.";
+    }
+  </script>
+</body>
+</html>

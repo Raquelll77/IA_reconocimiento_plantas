@@ -64,31 +64,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Manejo del botón para listar especies
-  speciesButton.addEventListener("click", async () => {
-    try {
-      const response = await listarEspecies();
-      console.log("Especies disponibles:", response);
-      message.textContent =
-        "Consulta de especies exitosa. Revisa la consola para detalles.";
-    } catch (error) {
-      console.error("Error al listar especies:", error);
-      message.textContent = "Error al listar las especies: " + error.message;
-    }
-  });
-});
+  // Manejo del botón para listar especies //original
+//   speciesButton.addEventListener("click", async () => {
+//     try {
+//       const response = await listarEspecies();
+//       console.log("Especies disponibles:", response);
+//       message.textContent =
+//         "Consulta de especies exitosa. Revisa la consola para detalles.";
+//     } catch (error) {
+//       console.error("Error al listar especies:", error);
+//       message.textContent = "Error al listar las especies: " + error.message;
+//     }
+//   });
+speciesButton.addEventListener("click", async () => {
+  try {
+    const response = await listarEspecies(); // Obtenemos las especies
+    console.log("Especies disponibles:", response); // Temporal, para pruebas
 
-// speciesButton.addEventListener("click", async () => {
-//   try {
-//     const response = await listarEspecies();
-//     console.log("Especies disponibles:", response);
-//     message.textContent =
-//       "Consulta de especies exitosa. Revisa la consola para detalles.";
-//   } catch (error) {
-//     console.error("Error al listar especies:", error);
-//     message.textContent = "Error al listar las especies: " + error.message;
-//   }
-// });
+    // Guardamos los datos en localStorage para compartir con la segunda página
+    localStorage.setItem("especies", JSON.stringify(response));
+
+    // Redirigimos a la segunda página
+    window.location.href = "especies.html";
+  } catch (error) {
+    console.error("Error al listar especies:", error);
+    message.textContent = "Error al listar las especies: " + error.message;
+  }
+});
+ });
+
+
+
+
+
 
 // Captura en tiempo real desde la cámara
 async function startVideoStream() {
