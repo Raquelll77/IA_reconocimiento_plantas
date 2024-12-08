@@ -123,7 +123,7 @@
       // Crear tarjetas para las especies de esta página
       speciesToShow.forEach(species => {
         const { name, scientificName, family, score, conservationStatus, imageUrl } = species;
-
+        console.log(species);
         const cardHTML = `
           <div class="card">
             <img src="${species.imageUrl || 'placeholder.jpg'}" alt="${name}" class="plant-image" />
