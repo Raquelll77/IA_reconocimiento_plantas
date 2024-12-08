@@ -122,7 +122,7 @@
 
       // Crear tarjetas para las especies de esta página
       speciesToShow.forEach(result => {
-        const { name, scientificName, family, score, conservationStatus, imageUrl } = species;
+        const { name, scientificName, family, score, conservationStatus, imageUrl } = result;
         console.log(result);
         console.log('esto es '+ result.commonNames);
         console.log('esto es '+ result.commonNames[0]);
