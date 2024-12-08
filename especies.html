@@ -29,22 +29,13 @@
   <h1>Especies Disponibles</h1>
   <div id="speciesContainer"></div>
 
+  <!-- Incluir el archivo JS -->
+  <script src="script.js"></script>
   <script>
-    // Función para hacer el llamado a la API de especies
-    async function listarEspecies() {
-      // Aquí puedes realizar tu llamada a la API para obtener las especies
-      // Para efectos de ejemplo, retornamos datos simulados
-      return [
-        { name: "Especie 1", description: "Descripción de la especie 1" },
-        { name: "Especie 2", description: "Descripción de la especie 2" },
-        { name: "Especie 3", description: "Descripción de la especie 3" }
-      ];
-    }
-
     // Función para generar las tarjetas
     async function mostrarEspecies() {
       try {
-        const response = await listarEspecies(); // Obtener las especies
+        const response = await listarEspecies(); // Llamar a la función del archivo "script.js"
         const speciesContainer = document.getElementById("speciesContainer");
 
         if (response && Array.isArray(response)) {
@@ -55,7 +46,7 @@
 
             const title = document.createElement("div");
             title.className = "card-title";
-            title.textContent = species.name;
+            title.textContent = species.name; // Ajustar según los datos
 
             const description = document.createElement("div");
             description.className = "card-description";
