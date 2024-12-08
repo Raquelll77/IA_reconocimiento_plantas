@@ -30,39 +30,53 @@
   <div id="speciesContainer"></div>
 
   <script>
-    // Función para obtener parámetros de la URL
-    function getUrlParameter(name) {
-      const url = new URL(window.location.href);
-      return decodeURIComponent(url.searchParams.get(name));
+    // Función para hacer el llamado a la API de especies
+    async function listarEspecies() {
+      // Aquí puedes realizar tu llamada a la API para obtener las especies
+      // Para efectos de ejemplo, retornamos datos simulados
+      return [
+        { name: "Especie 1", description: "Descripción de la especie 1" },
+        { name: "Especie 2", description: "Descripción de la especie 2" },
+        { name: "Especie 3", description: "Descripción de la especie 3" }
+      ];
     }
 
-    // Recuperar las especies desde la URL
-    const speciesData = JSON.parse(getUrlParameter("data"));
+    // Función para generar las tarjetas
+    async function mostrarEspecies() {
+      try {
+        const response = await listarEspecies(); // Obtener las especies
+        const speciesContainer = document.getElementById("speciesContainer");
 
-    const speciesContainer = document.getElementById("speciesContainer");
+        if (response && Array.isArray(response)) {
+          response.forEach(species => {
+            // Crear una tarjeta para cada especie
+            const card = document.createElement("div");
+            card.className = "card";
 
-    if (speciesData && Array.isArray(speciesData)) {
-      speciesData.forEach(species => {
-        // Crear una tarjeta para cada especie
-        const card = document.createElement("div");
-        card.className = "card";
+            const title = document.createElement("div");
+            title.className = "card-title";
+            title.textContent = species.name;
 
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = species.name; // Ajustar según los datos
+            const description = document.createElement("div");
+            description.className = "card-description";
+            description.textContent = species.description || "Sin descripción";
 
-        const description = document.createElement("div");
-        description.className = "card-description";
-        description.textContent = species.description || "Sin descripción";
+            card.appendChild(title);
+            card.appendChild(description);
 
-        card.appendChild(title);
-        card.appendChild(description);
-
-        speciesContainer.appendChild(card);
-      });
-    } else {
-      speciesContainer.textContent = "No se encontraron especies.";
+            speciesContainer.appendChild(card);
+          });
+        } else {
+          speciesContainer.textContent = "No se encontraron especies.";
+        }
+      } catch (error) {
+        console.error("Error al mostrar las especies:", error);
+        document.getElementById("speciesContainer").textContent = "Error al cargar las especies.";
+      }
     }
+
+    // Llamar a la función para mostrar las especies
+    mostrarEspecies();
   </script>
 </body>
 </html>

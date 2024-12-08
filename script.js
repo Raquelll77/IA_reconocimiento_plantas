@@ -78,17 +78,14 @@ document.addEventListener("DOMContentLoaded", () => {
 //   });
 speciesButton.addEventListener("click", async () => {
   try {
-    const response = await listarEspecies(); // Obtenemos las especies
-    console.log("Especies disponibles:", response); // Temporal, para pruebas
-
-    // Redirigir a la segunda página sin almacenar los datos en localStorage
-    // Pasar los datos directamente a la segunda página mediante la URL
-    window.location.href = `especies.html?data=${encodeURIComponent(JSON.stringify(response))}`;
+    // Redirigir directamente a la página sin pasar los datos en la URL
+    window.location.href = "especies.html";
   } catch (error) {
-    console.error("Error al listar especies:", error);
-    message.textContent = "Error al listar las especies: " + error.message;
+    console.error("Error al redirigir:", error);
+    message.textContent = "Error al redirigir: " + error.message;
   }
 });
+
 
 
  });
