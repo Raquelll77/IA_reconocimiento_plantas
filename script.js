@@ -248,7 +248,7 @@ async function renderResultCard(data) {
   const score = (result.score * 100).toFixed(2) + "%";
 
   const images = await fetchImagesFromGBIF(scientificName);
-  document.body.appendChild(diagnosticCard);
+  const salud = document.body.appendChild(diagnosticCard);
   const imageUrl =
     images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
