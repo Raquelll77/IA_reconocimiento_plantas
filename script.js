@@ -169,8 +169,6 @@ async function identificarPlanta(imagen) {
 
   console.log("FormData enviado:", Object.fromEntries(formData.entries()));
 
-  await detectarSaludPlanta(imagen);
-
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -191,7 +189,6 @@ async function identificarPlanta(imagen) {
     console.error("Error al identificar la planta:", error);
     throw error;
   }
-
 
 }
 
@@ -512,6 +509,8 @@ async function detectarSaludPlanta(imagen) {
   const formData = new FormData();
   formData.append('images[]', imagen);
 
+  const response =   await detectarSaludPlanta(imagen);
+
   // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
   try {
       const response = await fetch(endpoint, {
@@ -549,6 +548,7 @@ function renderDiagnosticoSalud(suggestions) {
           `).join('')}
       </ul>
   `;
-  
   document.body.appendChild(diagnosticCard); // O donde quieras mostrar el diagnóstico
+
+  
 }
