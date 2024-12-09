@@ -124,12 +124,13 @@
       speciesToShow.forEach(result => {
         const { name, scientificName, family, score, conservationStatus, imageUrl } = result;
         console.log(result);
+        console.log(name);
         console.log(result.scientificNameWithoutAuthor);
         console.log('esto es '+ result.commonNames);
         console.log('esto es '+ result.commonNames[0]);
         console.log('esto es 2'+ result.commonNames[startIndex]);
         const commonName = result.commonNames[startIndex] || "No disponible";
-   //scientificName = result.species.scientificName || "No disponible";
+   scientificName = result.scientificNameWithoutAuthor || "No disponible";
  // family = result.family.scientificName[0] || "No disponible";
   conservationStatus =
         result.iucn?.category === "LC"
