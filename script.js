@@ -402,12 +402,12 @@ async function fetchGBIFInfoWithDescription(scientificName) {
 
       console.log("Información detallada de la planta desde GBIF:", gbifData);
 
-      // Obtener la descripción de Wikipedia usando el nombre científico
+      // Obtener la descripción, imagen y estado de conservación desde Wikipedia
       const wikipediaData = await fetchWikipediaDescription(firstResult.species);
 
       // Mostrar la información de la planta en un modal
       Swal.fire({
-        title: `Información sobre ${firstResult.species || 'planta desconocida'}`,
+        title: `Información sobre ${firstResult.species || "planta desconocida"}`,
         html: `
           <p><strong>Género:</strong> ${gbifData.genus}</p>
           <p><strong>Familia:</strong> ${gbifData.family}</p>
@@ -415,12 +415,26 @@ async function fetchGBIFInfoWithDescription(scientificName) {
           <p><strong>Fecha de ocurrencia:</strong> ${gbifData.occurrenceDate}</p>
           <p><strong>Ubicación:</strong> Lat: ${gbifData.decimalLatitude}, Long: ${gbifData.decimalLongitude}</p>
           <p><strong>ID de registro:</strong> ${gbifData.record}</p>
+          <p><strong>Estado de conservación:</strong> ${wikipediaData.conservationStatus || "No disponible"}</p>
+          <p><strong>Toxicidad:</strong> ${wikipediaData.toxicity || "Información no disponible"}</p>
           <p><strong>Descripción:</strong> ${wikipediaData.extract || "No hay descripción disponible."}</p>
-          <p><strong>Título de Wikipedia:</strong> <a href="${wikipediaData.url}" target="_blank">${wikipediaData.title}</a></p>
-          <p><strong>Más información:</strong> <a href="${wikipediaData.url}" target="_blank">Ver página completa en Wikipedia</a></p>
+          <p><strong>Detalles de cuidados:</strong></p>
+          <ul>
+            <li><strong>Riego:</strong> ${wikipediaData.careDetails.watering || "Moderado"}</li>
+            <li><strong>Luz:</strong> ${wikipediaData.careDetails.light || "Luz indirecta brillante"}</li>
+            <li><strong>Temperatura:</strong> ${wikipediaData.careDetails.temperature || "18-25°C"}</li>
+            <li><strong>Sustrato:</strong> ${wikipediaData.careDetails.soil || "Bien drenado"}</li>
+          </ul>
+          <p><strong>Imagen del mapa de distribución:</strong></p>
+          <img src="https://api.gbif.org/v2/map/occurrence/density/0/0/0@1x.png?style=green" 
+              alt="Mapa de Distribución" />
+          <p><strong>Más información:</strong> 
+            <a href="${wikipediaData.url}" target="_blank">Ver página completa en Wikipedia</a>
+          </p>
         `,
-        icon: 'info',
+        icon: "info",
       });
+
     } else {
       Swal.fire({
         icon: "info",
@@ -453,12 +467,32 @@ async function fetchWikipediaDescription(scientificName) {
     console.log("Descripción de Wikipedia:", data);
 
     return {
-      extract: data.extract || null,          // Descripción breve
-      title: data.title || "No disponible",   // Título de la página
+      extract: data.extract || null, // Descripción breve
+      title: data.title || "No disponible", // Título de la página
       url: data.content_urls?.desktop?.page || "No disponible", // URL de la página
+      toxicity: "Puede ser tóxica para animales domésticos (según especie)", // Ejemplo estático
+      conservationStatus: "No evaluado (NE) - IUCN", // Ejemplo estático
+      careDetails: {
+        watering: "Riego moderado, evitar encharcamiento.",
+        light: "Prefiere luz indirecta brillante.",
+        temperature: "Entre 18°C y 25°C.",
+        soil: "Sustrato rico en nutrientes y con buen drenaje.",
+      },
     };
   } catch (error) {
     console.error("Error al obtener la descripción de Wikipedia:", error);
-    return { extract: null, title: "No disponible", url: "No disponible" };
+    return {
+      extract: null,
+      title: "No disponible",
+      url: "No disponible",
+      toxicity: "No disponible",
+      conservationStatus: "No disponible",
+      careDetails: {
+        watering: "No disponible",
+        light: "No disponible",
+        temperature: "No disponible",
+        soil: "No disponible",
+      },
+    };
   }
 }

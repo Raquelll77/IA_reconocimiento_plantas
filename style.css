@@ -196,3 +196,84 @@ body {
   background-color: #28a745;
   color: #fff;
 }
+
+/* Contenedor principal del texto */
+.swal2-html-container {
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  color: #444;
+  text-align: left !important;
+  /* Alineación izquierda del texto principal */
+  line-height: 1.5;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Estilo del título centrado */
+.swal2-title {
+  text-align: center;
+  /* Mantiene el título centrado */
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  /* Azul oscuro */
+  margin-bottom: 15px;
+}
+
+/* Estilo de los títulos destacados dentro del contenido */
+.swal2-html-container strong {
+  font-weight: bold;
+  color: #2c3e50;
+  /* Azul oscuro */
+}
+
+/* Estilo de listas */
+.swal2-html-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.swal2-html-container ul li {
+  background-color: #f9f9f9;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-left: 4px solid #28a745;
+  border-radius: 4px;
+  color: #555;
+}
+
+/* Estilo de enlaces */
+.swal2-html-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.swal2-html-container a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Imagen dentro del modal centrada */
+.swal2-html-container img {
+  display: block;
+  margin: 10px auto;
+  /* Centra la imagen horizontalmente */
+  max-width: 100%;
+  border-radius: 6px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón del SweetAlert */
+.swal2-confirm {
+  background-color: #28a745 !important;
+  color: #fff !important;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.swal2-confirm:hover {
+  background-color: #218838 !important;
+}
