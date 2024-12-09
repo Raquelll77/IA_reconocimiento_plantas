@@ -122,7 +122,7 @@
 
       // Crear tarjetas para las especies de esta página
       speciesToShow.forEach(result => {
-        const { name, scientificName, family, score, conservationStatus, imageUrl } = result;
+        const { name,  family, score, conservationStatus, imageUrl } = result;
         console.log(result);
         console.log(name);
         console.log(result.scientificNameWithoutAuthor);
@@ -130,7 +130,7 @@
         console.log('esto es '+ result.commonNames[0]);
         console.log('esto es 2'+ result.commonNames[startIndex]);
          commonName = result.commonNames[startIndex] || "No disponible";
-   scientificName = result.scientificNameWithoutAuthor || "No disponible";
+   const scientificName = result.scientificNameWithoutAuthor || "No disponible";
  // family = result.family.scientificName[0] || "No disponible";
 //   conservationStatus =
 //         result.iucn?.category === "LC"
@@ -139,8 +139,9 @@
 //   score = (result.score[startIndex] * 100).toFixed(2) + "%";
 
   images =  fetchImagesFromGBIF(scientificName);
+  console.log(images);
   imageUrl =
-    images[startIndex] || "https://via.placeholder.com/300?text=Sin+Imagen";
+    images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
         const cardHTML = `
           <div class="card">
