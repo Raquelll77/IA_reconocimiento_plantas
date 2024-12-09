@@ -168,7 +168,6 @@ async function identificarPlanta(imagen) {
   formData.append("organs", "leaf"); // Relacionado con el archivo (ejemplo: "leaf")
 
   console.log("FormData enviado:", Object.fromEntries(formData.entries()));
-  const response = await detectarSaludPlanta(imagen);
 
   try {
     const response = await fetch(url, {
@@ -248,7 +247,6 @@ async function renderResultCard(data) {
   const score = (result.score * 100).toFixed(2) + "%";
 
   const images = await fetchImagesFromGBIF(scientificName);
-  const salud = document.body.appendChild(diagnosticCard);
   const imageUrl =
     images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
@@ -265,9 +263,7 @@ async function renderResultCard(data) {
          style="font-size: 1.5rem; cursor: pointer;"
          title="Más información"></i>
     </div>
-    
   `;
-
 
   document.getElementById("resultCard").innerHTML = cardHTML;
 
@@ -507,12 +503,13 @@ async function fetchWikipediaDescription(scientificName) {
 
 // Función para detectar la salud de la planta usando la API Plant.id
 async function detectarSaludPlanta(imagen) {
-  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp';
+  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp'; // Reemplaza con tu clave API de Plant.id
   const endpoint = 'https://api.plant.id/v2/health_assessment';
 
   const formData = new FormData();
   formData.append('images[]', imagen);
 
+  
 
   // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
   try {
