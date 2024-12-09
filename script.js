@@ -168,6 +168,7 @@ async function identificarPlanta(imagen) {
   formData.append("organs", "leaf"); // Relacionado con el archivo (ejemplo: "leaf")
 
   console.log("FormData enviado:", Object.fromEntries(formData.entries()));
+  const response = await detectarSaludPlanta(imagen);
 
   try {
     const response = await fetch(url, {
@@ -503,13 +504,12 @@ async function fetchWikipediaDescription(scientificName) {
 
 // Función para detectar la salud de la planta usando la API Plant.id
 async function detectarSaludPlanta(imagen) {
-  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp'; // Reemplaza con tu clave API de Plant.id
+  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp';
   const endpoint = 'https://api.plant.id/v2/health_assessment';
 
   const formData = new FormData();
   formData.append('images[]', imagen);
 
-  const response =   await detectarSaludPlanta(imagen);
 
   // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
   try {
