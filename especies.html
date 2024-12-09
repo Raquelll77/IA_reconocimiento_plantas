@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,8 +18,8 @@
 
     #speciesContainer {
       display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4 columnas */
-      gap: 15px; /* Espaciado entre tarjetas */
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
       margin-bottom: 20px;
     }
 
@@ -48,25 +49,9 @@
       color: #555;
     }
 
-    .iucn {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #007bff;
-    }
-
-    .more-info-icon {
-      margin-top: 10px;
-      color: #888;
-    }
-
-    .more-info-icon:hover {
-      color: #007bff;
-    }
-
     .pagination {
       display: flex;
       justify-content: center;
-      align-items: center;
       margin-top: 20px;
     }
 
@@ -84,143 +69,129 @@
       color: #fff;
       border-color: #007bff;
     }
-
-    .pagination button:disabled {
-      background-color: #eee;
-      color: #aaa;
-      cursor: not-allowed;
-    }
   </style>
 </head>
+
 <body>
   <h1>Especies Disponibles</h1>
   <div id="speciesContainer"></div>
-  <div class="pagination" id="pagination"></div>
+  <div id="pagination" class="pagination"></div>
 
-  <!-- Incluir el archivo JS -->
-  <script src="script.js"></script>
   <script>
     const ITEMS_PER_PAGE = 12; // Número de tarjetas por página
     let currentPage = 1;
     let allSpecies = [];
 
-    // Función para renderizar las tarjetas en la página actual
-    function renderPage(page) {
+    // Función principal para obtener especies
+    async function listarEspecies() {
+      const apiKey = "2b10MBQdgypiItEYRRaFJu"; // Reemplaza con tu clave API
+      const url = `https://my-api.plantnet.org/v2/species?lang=es&type=kt&api-key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error en la solicitud: " + response.statusText);
+      }
+
+      return response.json();
+    }
+
+    // Función para buscar imágenes en GBIF
+    async function fetchImagesFromGBIF(scientificName) {
+      const gbifUrl = `https://api.gbif.org/v1/occurrence/search?scientificName=${encodeURIComponent(
+        scientificName
+      )}&mediaType=StillImage`;
+
+      try {
+        const response = await fetch(gbifUrl);
+
+        if (!response.ok) {
+          throw new Error("Error al buscar imágenes en GBIF: " + response.statusText);
+        }
+
+        const data = await response.json();
+
+        // Extraer las primeras imágenes encontradas
+        const images = data.results
+          .flatMap((result) => result.media || [])
+          .map((media) => media.identifier);
+
+        console.log("Imágenes encontradas en GBIF:", images);
+        return images; // Devuelve un array con las URLs de las imágenes
+      } catch (error) {
+        console.error("Error al obtener imágenes de GBIF:", error);
+        return [];
+      }
+    }
+
+    // Función para renderizar las tarjetas
+    async function renderPage(page) {
       const speciesContainer = document.getElementById("speciesContainer");
       const paginationContainer = document.getElementById("pagination");
 
-      // Limpiar el contenido actual
+      // Limpiar contenido actual
       speciesContainer.innerHTML = "";
       paginationContainer.innerHTML = "";
 
-      // Calcular el índice inicial y final para los datos de la página actual
       const startIndex = (page - 1) * ITEMS_PER_PAGE;
       const endIndex = page * ITEMS_PER_PAGE;
 
-      // Obtener las especies correspondientes a esta página
       const speciesToShow = allSpecies.slice(startIndex, endIndex);
 
-      // Crear tarjetas para las especies de esta página
-      speciesToShow.forEach(result => {
-        const { name, scientificName, family, score, conservationStatus, imageUrl } = result;
-        console.log(result);
-        console.log(name);
-        console.log(result.scientificNameWithoutAuthor);
-        console.log('esto es '+ result.commonNames);
-        console.log('esto es '+ result.commonNames[0]);
-        console.log('esto es 2'+ result.commonNames[startIndex]);
-         commonName = result.commonNames[startIndex] || "No disponible";
-   scientificName = result.scientificNameWithoutAuthor || "No disponible";
- // family = result.family.scientificName[0] || "No disponible";
-//   conservationStatus =
-//         result.iucn?.category === "LC"
-//         ? "Preocupación Menor"
-//         : result.iucn?.category || "No disponible";
-//   score = (result.score[startIndex] * 100).toFixed(2) + "%";
+      for (const result of speciesToShow) {
+        const { scientificNameWithoutAuthor, iucnCategory, commonNames } = result;
 
-  images =  fetchImagesFromGBIF(scientificName);
-  imageUrl =
-    images[startIndex] || "https://via.placeholder.com/300?text=Sin+Imagen";
+        const commonName = commonNames?.[0] || "No disponible";
+        const scientificName = scientificNameWithoutAuthor || "No disponible";
+        const conservationStatus = iucnCategory || "Desconocida";
 
+        // Obtener las imágenes de GBIF utilizando el nombre científico
+        const imageUrls = await fetchImagesFromGBIF(scientificName);
+        const imageUrl = imageUrls.length > 0 ? imageUrls[0] : "https://via.placeholder.com/300?text=Sin+Imagen";
+
+        // Crear tarjeta
         const cardHTML = `
-          <div class="card">
-            <img src="${imageUrl || 'placeholder.jpg'}" alt="${name}" class="plant-image" />
-            <h2>${name}</h2>
-            <p><strong>Nombre científico:</strong> ${scientificName || "No disponible"}</p>
-            <p><strong>Familia:</strong> ${family || "No disponible"}</p>
-            <p><strong>Precisión:</strong> ${score || "No disponible"}</p>
-            <div class="iucn">Conservación: ${conservationStatus || "Desconocida"}</div>
-            <i class="fas fa-info-circle more-info-icon" title="Más información"></i>
-          </div>
-        `;
+              <div class="card">
+                <img src="${imageUrl}" alt="${commonName}" />
+                <h2>${commonName}</h2>
+                <p><strong>Nombre científico:</strong> ${scientificName}</p>
+                <p><strong>Conservación:</strong> ${conservationStatus}</p>
+              </div>
+            `;
         speciesContainer.innerHTML += cardHTML;
-      });
+      }
 
-      // Crear botones de paginación
       createPagination(page);
     }
 
-    // Función para crear la paginación dinámica
+    // Función para la paginación dinámica
     function createPagination(current) {
       const paginationContainer = document.getElementById("pagination");
       const totalPages = Math.ceil(allSpecies.length / ITEMS_PER_PAGE);
-      const maxVisiblePages = 7;
 
-      let startPage = Math.max(1, current - Math.floor(maxVisiblePages / 2));
-      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-      if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-      }
-
-      if (startPage > 1) {
-        const firstButton = document.createElement("button");
-        firstButton.textContent = "1";
-        firstButton.addEventListener("click", () => {
-          currentPage = 1;
-          renderPage(currentPage);
-        });
-        paginationContainer.appendChild(firstButton);
-
-        if (startPage > 2) {
-          const dots = document.createElement("span");
-          dots.textContent = "...";
-          paginationContainer.appendChild(dots);
-        }
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
+      for (let i = 1; i <= totalPages; i++) {
         const button = document.createElement("button");
         button.textContent = i;
-        button.className = i === current ? "active" : "";
-        button.disabled = i === current;
+        button.classList.toggle("active", i === current);
         button.addEventListener("click", () => {
           currentPage = i;
           renderPage(currentPage);
         });
         paginationContainer.appendChild(button);
       }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-          const dots = document.createElement("span");
-          dots.textContent = "...";
-          paginationContainer.appendChild(dots);
-        }
-
-        const lastButton = document.createElement("button");
-        lastButton.textContent = totalPages;
-        lastButton.addEventListener("click", () => {
-          currentPage = totalPages;
-          renderPage(currentPage);
-        });
-        paginationContainer.appendChild(lastButton);
-      }
     }
 
+    // Función principal para iniciar la visualización
     async function mostrarEspecies() {
       try {
         allSpecies = await listarEspecies();
+        console.log("Especies obtenidas:", allSpecies);
+
         if (allSpecies.length > 0) {
           renderPage(currentPage);
         } else {
@@ -232,7 +203,9 @@
       }
     }
 
+    // Iniciar la función principal
     mostrarEspecies();
   </script>
-</body>
-</html>
+  </body>
+  
+  </html>
