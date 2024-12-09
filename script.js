@@ -270,6 +270,8 @@ async function renderResultCard(data) {
   `;
 
   document.getElementById("resultCard").innerHTML = cardHTML;
+  document.body.appendChild("diagnosticCard");
+
   
 
    // Evento para abrir el modal al hacer clic en el ícono
@@ -411,8 +413,6 @@ async function fetchGBIFInfoWithDescription(scientificName) {
 
       // Obtener la descripción, imagen y estado de conservación desde Wikipedia
       const wikipediaData = await fetchWikipediaDescription(firstResult.species);
-
-      document.body.appendChild(diagnosticCard);
 
       // Mostrar la información de la planta en un modal
       Swal.fire({
