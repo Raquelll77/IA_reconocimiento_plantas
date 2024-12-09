@@ -277,3 +277,19 @@ body {
 .swal2-confirm:hover {
   background-color: #218838 !important;
 }
+
+/* Ajustar el tamaño del mapa en el modal */
+.mapa-distribucion {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  /* Ajustar el tamaño máximo del mapa */
+  filter: brightness(0.9);
+  /* Ajustar el brillo de la imagen */
+}
+
+/* Opcional: Si deseas controlar el brillo solo cuando la imagen es demasiado brillante */
+.mapa-distribucion-brillante {
+  filter: brightness(0.5);
+  /* Reducir el brillo para que sea más visible */
+}

@@ -398,6 +398,7 @@ async function fetchGBIFInfoWithDescription(scientificName) {
         decimalLongitude: firstResult.decimalLongitude || "No disponible",
         occurrenceDate: firstResult.eventDate || "No disponible",
         record: firstResult.occurrenceID || "No disponible",
+        taxonKey: firstResult.taxonKey || "No disponible", // Asegúrate de obtener el taxonKey
       };
 
       console.log("Información detallada de la planta desde GBIF:", gbifData);
@@ -426,8 +427,8 @@ async function fetchGBIFInfoWithDescription(scientificName) {
             <li><strong>Sustrato:</strong> ${wikipediaData.careDetails.soil || "Bien drenado"}</li>
           </ul>
           <p><strong>Imagen del mapa de distribución:</strong></p>
-          <img src="https://api.gbif.org/v2/map/occurrence/density/0/0/0@1x.png?style=green" 
-              alt="Mapa de Distribución" />
+          <img src="https://api.gbif.org/v2/map/occurrence/density/0/0/0@1x.png?srs=EPSG:4326&taxonKey=${gbifData.taxonKey}&style=green.point" 
+               alt="Mapa de Distribución" class="mapa-distribucion" width: "80%"/>
           <p><strong>Más información:</strong> 
             <a href="${wikipediaData.url}" target="_blank">Ver página completa en Wikipedia</a>
           </p>
@@ -467,16 +468,16 @@ async function fetchWikipediaDescription(scientificName) {
     console.log("Descripción de Wikipedia:", data);
 
     return {
-      extract: data.extract || null, // Descripción breve
+      extract: data.extract || "No hay descripción disponible", // Descripción breve
       title: data.title || "No disponible", // Título de la página
       url: data.content_urls?.desktop?.page || "No disponible", // URL de la página
-      toxicity: "Puede ser tóxica para animales domésticos (según especie)", // Ejemplo estático
-      conservationStatus: "No evaluado (NE) - IUCN", // Ejemplo estático
+      toxicity: data.toc || "Información no disponible", // Toxicidad dinámica (según Wikipedia)
+      conservationStatus: data.conservationStatus || "No disponible", // Estado de conservación dinámico
       careDetails: {
-        watering: "Riego moderado, evitar encharcamiento.",
-        light: "Prefiere luz indirecta brillante.",
-        temperature: "Entre 18°C y 25°C.",
-        soil: "Sustrato rico en nutrientes y con buen drenaje.",
+        watering: data.careDetails?.watering || "Riego moderado, evitar encharcamiento.",
+        light: data.careDetails?.light || "Luz indirecta brillante.",
+        temperature: data.careDetails?.temperature || "Entre 18°C y 25°C.",
+        soil: data.careDetails?.soil || "Sustrato rico en nutrientes y con buen drenaje.",
       },
     };
   } catch (error) {
@@ -496,3 +497,4 @@ async function fetchWikipediaDescription(scientificName) {
     };
   }
 }
+
