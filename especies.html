@@ -128,8 +128,8 @@
         console.log('esto es '+ result.commonNames[0]);
         console.log('esto es 2'+ result.commonNames[startIndex]);
         const commonName = result.commonNames[startIndex] || "No disponible";
-   scientificName = result.species.scientificName[startIndex] || "No disponible";
-  family = result.species.family.scientificName[startIndex] || "No disponible";
+   scientificName = result.scientificName[startIndex] || "No disponible";
+  family = result.family.scientificName[startIndex] || "No disponible";
   conservationStatus =
         result.iucn?.category === "LC"
         ? "Preocupación Menor"
