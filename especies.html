@@ -141,7 +141,7 @@
   images =  fetchImagesFromGBIF(scientificName);
   console.log(images);
   imageUrl =
-    images[startIndex] || "https://via.placeholder.com/300?text=Sin+Imagen";
+    images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
         const cardHTML = `
           <div class="card">
