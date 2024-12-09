@@ -269,7 +269,7 @@ async function renderResultCard(data) {
   `;
 
   document.getElementById("resultCard").innerHTML = cardHTML;
-  document.body.appendChild(diagnosticCard);
+  
 
    // Evento para abrir el modal al hacer clic en el ícono
   document
@@ -548,6 +548,6 @@ function renderDiagnosticoSalud(suggestions) {
           `).join('')}
       </ul>
   `;
-  
+  document.body.appendChild(diagnosticCard);
 }
 
