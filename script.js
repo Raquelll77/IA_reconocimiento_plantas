@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoStream = document.getElementById("videoStream");
   const captureCanvas = document.getElementById("captureCanvas");
   const captureButton = document.getElementById("captureButton");
-  const diagnosticCard = document.getElementById('diagnostic-card');
 
   // Manejo del formulario para identificar plantas
   form.addEventListener("submit", async (e) => {
@@ -504,54 +503,3 @@ async function fetchWikipediaDescription(scientificName) {
     };
   }
 }
-
-// Función para detectar la salud de la planta usando la API Plant.id
-async function detectarSaludPlanta(imagen) {
-  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp';
-  const endpoint = 'https://api.plant.id/v2/health_assessment';
-
-  const formData = new FormData();
-  formData.append('images[]', imagen);
-
-  // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
-  try {
-      const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-              'Api-Key': apiKey,
-          },
-          body: formData,
-      });
-
-      const data = await response.json();
-      
-      if (data.suggestions && data.suggestions.length > 0) {
-          renderDiagnosticoSalud(data.suggestions);
-      } else {
-          alert('No se pudo determinar la salud de la planta.');
-      }
-  } catch (error) {
-      console.error('Error al detectar la salud de la planta:', error);
-      alert('Hubo un error al procesar la imagen.');
-  }
-}
-
-// Función para mostrar el diagnóstico de salud en la interfaz de usuario
-function renderDiagnosticoSalud(suggestions) {
-  const diagnosticCard = document.createElement('div');
-  diagnosticCard.classList.add('card', 'diagnostic-card');
-  diagnosticCard.innerHTML = `
-      <h3>Diagnóstico de Salud de la Planta</h3>
-      <ul>
-          ${suggestions.map(suggestion => `
-              <li><strong>Posible Problema:</strong> ${suggestion.disease_name || 'Sin información'}<br>
-              <strong>Descripción:</strong> ${suggestion.disease_description || 'No disponible'}<br>
-              <strong>Probabilidad:</strong> ${Math.round(suggestion.probability * 100)}%<br></li>
-          `).join('')}
-      </ul>
-  `;
-  
-  document.body.appendChild(diagnosticCard);
-
-}
-
