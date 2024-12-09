@@ -248,6 +248,7 @@ async function renderResultCard(data) {
   const score = (result.score * 100).toFixed(2) + "%";
 
   const images = await fetchImagesFromGBIF(scientificName);
+  document.body.appendChild(diagnosticCard);
   const imageUrl =
     images[0] || "https://via.placeholder.com/300?text=Sin+Imagen";
 
@@ -259,7 +260,6 @@ async function renderResultCard(data) {
       <p><strong>Familia:</strong> ${family}</p>
       <p><strong>Precisión:</strong> ${score}</p>
       <div class="iucn">Conservación: ${conservationStatus}</div>
-      <p>document.body.appendChild(diagnosticCard)</p>
       <!-- Botón de información -->
       <i id="moreInfoIcon" class="fas fa-info-circle more-info-icon" 
          style="font-size: 1.5rem; cursor: pointer;"
@@ -267,6 +267,7 @@ async function renderResultCard(data) {
     </div>
     
   `;
+
 
   document.getElementById("resultCard").innerHTML = cardHTML;
 
