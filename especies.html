@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Especies</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -96,7 +101,7 @@
         }
 
         .card {
-          height: 270px;
+          height: 290px;
           padding: 5px;
         }
       }
@@ -115,6 +120,174 @@
           display: none; 
         } */
       }
+
+      /* Estilo del modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 500px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+      }
+
+      .modal-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .modal-body {
+        margin: 20px 0;
+      }
+
+      .modal img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #aaa;
+      }
+
+      .modal-close:hover {
+        color: #000;
+      }
+
+      .modal-footer {
+        margin-top: 10px;
+      }
+
+      /* Estilo botón de abrir modal */
+      #openModalButton {
+        display: block;
+        margin: 0 auto;
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      /* Contenedor principal del texto */
+      .swal2-html-container {
+        font-family: "Arial", sans-serif;
+        font-size: 16px;
+        color: #444;
+        text-align: left !important;
+        /* Alineación izquierda del texto principal */
+        line-height: 1.5;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      /* Estilo del título centrado */
+      .swal2-title {
+        text-align: center;
+        /* Mantiene el título centrado */
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        /* Azul oscuro */
+        margin-bottom: 15px;
+      }
+
+      /* Estilo de los títulos destacados dentro del contenido */
+      .swal2-html-container strong {
+        font-weight: bold;
+        color: #2c3e50;
+        /* Azul oscuro */
+      }
+
+      /* Estilo de listas */
+      .swal2-html-container ul {
+        list-style-type: none;
+        padding: 0;
+        margin-top: 10px;
+      }
+
+      .swal2-html-container ul li {
+        background-color: #f9f9f9;
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        border-left: 4px solid #28a745;
+        border-radius: 4px;
+        color: #555;
+      }
+
+      /* Estilo de enlaces */
+      .swal2-html-container a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .swal2-html-container a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+      }
+
+      /* Imagen dentro del modal centrada */
+      .swal2-html-container img {
+        display: block;
+        margin: 10px auto;
+        /* Centra la imagen horizontalmente */
+        max-width: 100%;
+        border-radius: 6px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Botón del SweetAlert */
+      .swal2-confirm {
+        background-color: #28a745 !important;
+        color: #fff !important;
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      .swal2-confirm:hover {
+        background-color: #218838 !important;
+      }
+
+      /* Ajustar el tamaño del mapa en el modal */
+      .mapa-distribucion {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        /* Ajustar el tamaño máximo del mapa */
+        filter: brightness(0.9);
+        /* Ajustar el brillo de la imagen */
+      }
+
+      /* Opcional: Si deseas controlar el brillo solo cuando la imagen es demasiado brillante */
+      .mapa-distribucion-brillante {
+        filter: brightness(0.5);
+        /* Reducir el brillo para que sea más visible */
+      }
+
+      .info-icon:hover {
+        color: #0056b3; /* Cambiar el color al pasar el mouse */
+        cursor: pointer;
+      }
     </style>
   </head>
 
@@ -123,6 +296,27 @@
     <div id="speciesContainer"></div>
     <div id="pagination" class="pagination"></div>
 
+    <!-- Modal Personalizado -->
+    <div class="modal" id="customModal">
+      <div class="modal-content">
+        <span class="modal-close" id="closeModal">&times;</span>
+        <div class="modal-header">Información de la Planta</div>
+        <div class="modal-body">
+          <p id="plantInfoText">Aquí se mostrará la información obtenida.</p>
+          <img
+            id="plantInfoImage"
+            src="https://via.placeholder.com/400"
+            alt="Imagen de la Planta"
+          />
+        </div>
+        <div class="modal-footer">
+          <button id="closeModalButton">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       const ITEMS_PER_PAGE = 12; // Número de tarjetas por página
       let currentPage = 1;
@@ -194,8 +388,12 @@
         // Renderizar tarjetas
         const cards = await Promise.all(
           speciesToShow.map(async (result) => {
-            const { scientificNameWithoutAuthor, iucnCategory, commonNames } =
-              result;
+            const {
+              scientificNameWithoutAuthor,
+              iucnCategory,
+              commonNames,
+              scientificNameAuthorship,
+            } = result;
 
             const commonName = commonNames?.[0] || "No disponible";
             const scientificName =
@@ -216,6 +414,14 @@
           <h2>${commonName}</h2>
           <p><strong>Nombre científico:</strong> ${scientificName}</p>
           <p><strong>Conservación:</strong> ${conservationStatus}</p>
+          <i class="fas fa-info-circle info-icon" 
+       title="Más Información"
+       onclick="openModal('${
+         scientificName ||
+         scientificNameWithoutAuthor ||
+         scientificNameAuthorship
+       }')"></i>
+
         </div>
       `;
           })
@@ -302,6 +508,20 @@
 
       // Iniciar la función principal
       mostrarEspecies();
+
+      async function openModal(scientificName) {
+        // Llama a la función `fetchGBIFInfoWithDescription` para obtener la información de GBIF
+        try {
+          await fetchGBIFInfoWithDescription(scientificName);
+        } catch (error) {
+          console.error("Error al abrir el modal con SweetAlert:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo cargar la información del modal.",
+          });
+        }
+      }
     </script>
   </body>
 </html>
