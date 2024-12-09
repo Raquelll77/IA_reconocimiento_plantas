@@ -132,11 +132,11 @@
         const commonName = result.commonNames[startIndex] || "No disponible";
    scientificName = result.scientificNameWithoutAuthor || "No disponible";
  // family = result.family.scientificName[0] || "No disponible";
-  conservationStatus =
-        result.iucn?.category === "LC"
-        ? "Preocupación Menor"
-        : result.iucn?.category || "No disponible";
-  score = (result.score[startIndex] * 100).toFixed(2) + "%";
+//   conservationStatus =
+//         result.iucn?.category === "LC"
+//         ? "Preocupación Menor"
+//         : result.iucn?.category || "No disponible";
+//   score = (result.score[startIndex] * 100).toFixed(2) + "%";
 
   images =  fetchImagesFromGBIF(scientificName);
   imageUrl =
