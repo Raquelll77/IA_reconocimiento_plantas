@@ -169,6 +169,8 @@ async function identificarPlanta(imagen) {
 
   console.log("FormData enviado:", Object.fromEntries(formData.entries()));
 
+  await detectarSaludPlanta(imagen);
+
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -189,6 +191,7 @@ async function identificarPlanta(imagen) {
     console.error("Error al identificar la planta:", error);
     throw error;
   }
+
 
 }
 
@@ -503,13 +506,11 @@ async function fetchWikipediaDescription(scientificName) {
 
 // Función para detectar la salud de la planta usando la API Plant.id
 async function detectarSaludPlanta(imagen) {
-  const apiKey = 'QkILT9YvrE5vyuP9WLVh9YYaMmMu5LofeX74aDV2F1OrAvdcYp'; // Reemplaza con tu clave API de Plant.id
+  const apiKey = '3b2j6OiDfgNBsR0LEvLAigM5dE7QRqSYw9YuvG64S3j5lsVYA1'; // Reemplaza con tu clave API de Plant.id
   const endpoint = 'https://api.plant.id/v2/health_assessment';
 
   const formData = new FormData();
   formData.append('images[]', imagen);
-
-  
 
   // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
   try {
@@ -548,7 +549,6 @@ function renderDiagnosticoSalud(suggestions) {
           `).join('')}
       </ul>
   `;
-  document.body.appendChild(diagnosticCard); // O donde quieras mostrar el diagnóstico
-
   
+  document.body.appendChild(diagnosticCard); // O donde quieras mostrar el diagnóstico
 }
