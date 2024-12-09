@@ -270,7 +270,6 @@ async function renderResultCard(data) {
   `;
 
   document.getElementById("resultCard").innerHTML = cardHTML;
-  document.body.appendChild("diagnosticCard");
 
   
 
@@ -552,5 +551,7 @@ function renderDiagnosticoSalud(suggestions) {
       </ul>
   `;
   
+  document.body.appendChild(diagnosticCard);
+
 }
 
