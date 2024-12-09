@@ -169,6 +169,8 @@ async function identificarPlanta(imagen) {
 
   console.log("FormData enviado:", Object.fromEntries(formData.entries()));
 
+  await detectarSaludPlanta(imagen);
+
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -189,6 +191,8 @@ async function identificarPlanta(imagen) {
     console.error("Error al identificar la planta:", error);
     throw error;
   }
+
+
 }
 
 // Función para esperar a que una imagen cargue
@@ -265,6 +269,8 @@ async function renderResultCard(data) {
   `;
 
   document.getElementById("resultCard").innerHTML = cardHTML;
+
+  
 
    // Evento para abrir el modal al hacer clic en el ícono
   document
@@ -498,3 +504,51 @@ async function fetchWikipediaDescription(scientificName) {
   }
 }
 
+// Función para detectar la salud de la planta usando la API Plant.id
+async function detectarSaludPlanta(imagen) {
+  const apiKey = '3b2j6OiDfgNBsR0LEvLAigM5dE7QRqSYw9YuvG64S3j5lsVYA1'; // Reemplaza con tu clave API de Plant.id
+  const endpoint = 'https://api.plant.id/v2/health_assessment';
+
+  const formData = new FormData();
+  formData.append('images[]', imagen);
+
+  // Realizar la solicitud POST a Plant.id para detectar la salud de la planta
+  try {
+      const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+              'Api-Key': apiKey,
+          },
+          body: formData,
+      });
+
+      const data = await response.json();
+      
+      if (data.suggestions && data.suggestions.length > 0) {
+          renderDiagnosticoSalud(data.suggestions);
+      } else {
+          alert('No se pudo determinar la salud de la planta.');
+      }
+  } catch (error) {
+      console.error('Error al detectar la salud de la planta:', error);
+      alert('Hubo un error al procesar la imagen.');
+  }
+}
+
+// Función para mostrar el diagnóstico de salud en la interfaz de usuario
+function renderDiagnosticoSalud(suggestions) {
+  const diagnosticCard = document.createElement('div');
+  diagnosticCard.classList.add('card', 'diagnostic-card');
+  diagnosticCard.innerHTML = `
+      <h3>Diagnóstico de Salud de la Planta</h3>
+      <ul>
+          ${suggestions.map(suggestion => `
+              <li><strong>Posible Problema:</strong> ${suggestion.disease_name || 'Sin información'}<br>
+              <strong>Descripción:</strong> ${suggestion.disease_description || 'No disponible'}<br>
+              <strong>Probabilidad:</strong> ${Math.round(suggestion.probability * 100)}%<br></li>
+          `).join('')}
+      </ul>
+  `;
+  
+  document.body.appendChild(diagnosticCard); // O donde quieras mostrar el diagnóstico
+}
