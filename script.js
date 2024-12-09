@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoStream = document.getElementById("videoStream");
   const captureCanvas = document.getElementById("captureCanvas");
   const captureButton = document.getElementById("captureButton");
+  const diagnosticCard = document.getElementById('diagnostic-card');
 
   // Manejo del formulario para identificar plantas
   form.addEventListener("submit", async (e) => {
@@ -411,6 +412,8 @@ async function fetchGBIFInfoWithDescription(scientificName) {
       // Obtener la descripción, imagen y estado de conservación desde Wikipedia
       const wikipediaData = await fetchWikipediaDescription(firstResult.species);
 
+      document.body.appendChild(diagnosticCard);
+
       // Mostrar la información de la planta en un modal
       Swal.fire({
         title: `Información sobre ${firstResult.species || "planta desconocida"}`,
@@ -548,6 +551,6 @@ function renderDiagnosticoSalud(suggestions) {
           `).join('')}
       </ul>
   `;
-  document.body.appendChild(diagnosticCard);
+  
 }
 
